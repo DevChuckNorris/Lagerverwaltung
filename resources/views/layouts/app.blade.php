@@ -12,8 +12,10 @@
 
     <!-- Styles -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/jquery.treegrid.css" rel="stylesheet">
 
     <!-- Scripts -->
+    <script src="/js/jquery-3.1.1.min.js"></script>
     <script>
         window.Laravel = <?php echo json_encode([
             'csrfToken' => csrf_token(),
@@ -43,7 +45,9 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;
+                        @if(!Auth::guest())
+                            <li><a href="{{ url('/storage') }}">@lang('navigation.storage')</a></li>
+                        @endif
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -81,7 +85,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/js/jquery-3.1.1.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/jquery.treegrid.min.js"></script>
+    <script src="/js/jquery.treegrid.bootstrap3.js"></script>
 </body>
 </html>
