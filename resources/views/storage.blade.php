@@ -10,7 +10,7 @@
                     <div class="panel-body">
                         <table class="table table-condensed tree">
                             @foreach($storage as $s)
-                                <tr class="treegrid-{{$s->tree_id}} {{$s->tree_parent != null ? 'treegrid-parent-' . $s->tree_parent : ''}}">
+                                <tr class="treegrid-{{$s->id}} {{$s->parent_storage != null ? 'treegrid-parent-' . $s->parent_storage : ''}}">
                                     <td class="col-md-2">{{$s->short_code}}</td>
                                     <td class="col-md-8">{{$s->name}}</td>
                                     <td class="col-md-2 text-right">

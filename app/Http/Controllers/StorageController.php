@@ -13,23 +13,16 @@ class StorageController extends Controller
     }
 
     public function index() {
-        $storage = Storage::where('parent_storage', null)->get();
-        $all = [];
-        $i = 0;
-        foreach($storage as $s) {
-            $i++;
-            $s->tree_id = $i;
-            $all[] = $s;
-            $this->collectChildren($all, $s, $i);
-        }
+        $all = $this->allStorage();
 
         return view('storage', ['storage' => $all]);
     }
 
     public function edit($id) {
         $storage = Storage::find($id);
+        $all = $this->allStorage();
 
-        return view('edit_storage', ['storage' => $storage]);
+        return view('edit_storage', ['storage' => $storage, 'all' => $all]);
     }
 
     public function delete($id) {
@@ -59,17 +52,23 @@ class StorageController extends Controller
         $storage->delete();
     }
 
-    private function collectChildren(&$storage, $s, &$i) {
-        $parent = $i;
+    private function allStorage() {
+        $storage = Storage::where('parent_storage', null)->get();
+        $all = [];
 
+        foreach($storage as $s) {
+            $all[] = $s;
+            $this->collectChildren($all, $s);
+        }
+
+        return $all;
+    }
+
+    private function collectChildren(&$storage, $s) {
         $children = $s->children;
         foreach ($children as $s) {
-            $i++;
-            $s->tree_id = $i;
-            $s->tree_parent = $parent;
-
             $storage[] = $s;
-            $this->collectChildren($storage, $s, $i);
+            $this->collectChildren($storage, $s);
         }
     }
 }

@@ -8,6 +8,19 @@ class Storage extends Model
 {
     protected $table = 'storage';
 
+    public function path() {
+        $parentPath = '';
+        $parent = $this->parent;
+        if($parent != null) {
+            $parentPath = $parent->path();
+        }
+
+        if($parentPath == '') {
+            return $this->short_code;
+        }
+        return $parentPath . ' > ' . $this->short_code;
+    }
+
     public function children() {
         return $this->hasMany('App\Storage', 'parent_storage');
     }
