@@ -16,3 +16,4 @@ Auth::routes();
 Route::get('/', 'HomeController@index');
 Route::get('/storage', 'StorageController@index');
 Route::get('/storage/{id}/edit', 'StorageController@edit');
+Route::get('/storage/{id}/delete', 'StorageController@delete');

@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/jquery.treegrid.css" rel="stylesheet">
+    <link href="/css/app.css" rel="stylesheet">
 
     <!-- Scripts -->
     <script src="/js/jquery-3.1.1.min.js"></script>

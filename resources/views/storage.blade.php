@@ -8,17 +8,58 @@
                     <div class="panel-heading">@lang('navigation.storage')</div>
 
                     <div class="panel-body">
-                        <table class="table tree">
+                        <table class="table table-condensed tree">
                             @foreach($storage as $s)
                                 <tr class="treegrid-{{$s->tree_id}} {{$s->tree_parent != null ? 'treegrid-parent-' . $s->tree_parent : ''}}">
-                                    <td>{{$s->short_code}}</td>
-                                    <td>{{$s->name}}</td>
-                                    <td><a href="{{ action('StorageController@edit', ['id' => $s->id]) }}">@lang('app.edit')</a></td>
+                                    <td class="col-md-2">{{$s->short_code}}</td>
+                                    <td class="col-md-8">{{$s->name}}</td>
+                                    <td class="col-md-2 text-right">
+                                        <a href="{{ action('StorageController@edit', ['id' => $s->id]) }}">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </a>
+                                        <a href="{{ action('StorageController@edit', ['id' => $s->id]) }}">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </a>
+                                        <a href="{{ action('StorageController@delete', ['id' => $s->id]) }}"
+                                           onclick="event.preventDefault(); remove({{$s->id}}, {{$s->tree_id}})">
+                                            <span class="glyphicon glyphicon-minus"></span>
+                                        </a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </table>
 
                         <script>
+                            var deleteUrl = "{{action('StorageController@delete', ['id' => 'INSERT_ID'])}}";
+
+                            function remove(id, treeId) {
+                                // Search for children
+                                var childrenCount = $('.treegrid-parent-' + treeId).length;
+                                var removeText = "@lang('app.remove_storage')";
+
+                                if(childrenCount > 0) {
+                                    removeText = "@lang('app.remove_storage_with_children')";
+                                }
+
+                                // Ask for confirmation
+                                var confirmation = confirm(removeText);
+                                if(confirmation) {
+                                    var url = deleteUrl.replace('INSERT_ID', id);
+                                    $.ajax(url).done(function(msg) {
+                                        var res = JSON.parse(msg);
+
+                                        if(res.error) {
+                                            alert(res.message);
+                                        } else {
+                                            alert("@lang('app.remove_storage_success')");
+                                            $('.treegrid-' + treeId).remove();
+                                        }
+                                    }).fail(function() {
+                                        alert("A problem occurred.");
+                                    })
+                                }
+                            }
+
                             $(document).ready(function() {
                                 $('.tree').treegrid({
                                     'initialState': 'collapsed'
