@@ -2,6 +2,7 @@
 
 return [
 
+    'components' => 'Bauteile',
     'storage'   => 'Lagerplätze',
 
 ];

@@ -6,6 +6,9 @@ return [
     'save' => 'Speichern',
     'edit'   => 'Bearbeiten',
     'delete'   => 'Löschen',
+    'created_at' => 'Erstellt am',
+    'updated_at' => 'Zuletzt aktualisiert',
+    'new' => 'Neu',
 
     'new_storage' => 'Neues Lager anlegen',
     'edit_storage' => ':name bearbeiten',
@@ -18,4 +21,10 @@ return [
     'storage_parent' => 'Ober-Lager',
     'main_storage' => 'WURZEL',
 
+    'components' => 'Bauteile',
+    'component_item_number' => 'ID',
+    'component_description' => 'Bezeichnung',
+    'component_quantity' => 'Stückzahl',
+    'component_min_quantity' => 'Min. Stückzahl',
+    'component_price' => 'Preis',
 ];

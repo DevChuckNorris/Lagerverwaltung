@@ -15,6 +15,7 @@
     <link href="/css/jquery.treegrid.css" rel="stylesheet">
     <link href="/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="/css/app.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.css"/>
 
     <!-- Scripts -->
     <script src="/js/jquery-3.1.1.min.js"></script>
@@ -48,6 +49,7 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
                         @if(!Auth::guest())
+                            <li><a href="{{ url('/components') }}">@lang('navigation.components')</a></li>
                             <li><a href="{{ url('/storage') }}">@lang('navigation.storage')</a></li>
                         @endif
                     </ul>
@@ -91,5 +93,6 @@
     <script src="/js/jquery.treegrid.min.js"></script>
     <script src="/js/jquery.treegrid.bootstrap3.js"></script>
     <script src="/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.13/datatables.min.js"></script>
 </body>
 </html>
