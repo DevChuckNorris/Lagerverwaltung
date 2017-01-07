@@ -48,6 +48,22 @@ class StorageController extends Controller
         return view('edit_storage', ['storage' => $storage, 'all' => $all]);
     }
 
+    public function newStorage() {
+        $storage = new Storage;
+        $all = $this->allStorage();
+
+        return view('edit_storage', ['storage' => $storage, 'all' => $all]);
+    }
+
+    public function newStorageParent($parent) {
+        $storage = new Storage;
+        $storage->id = 0;
+        $storage->parent_storage = $parent;
+        $all = $this->allStorage();
+
+        return view('edit_storage', ['storage' => $storage, 'all' => $all]);
+    }
+
     public function delete($id) {
         // Grab storage
         $storage = Storage::find($id);

@@ -7,6 +7,7 @@ return [
     'edit'   => 'Bearbeiten',
     'delete'   => 'Löschen',
 
+    'new_storage' => 'Neues Lager anlegen',
     'edit_storage' => ':name bearbeiten',
     'remove_storage' => 'Wollen Sie dieses Lager wirklich löschen?',
     'remove_storage_with_children' => 'Wollen Sie dieses Lager (inklusive deren unter Lager) wirklich löschen?',

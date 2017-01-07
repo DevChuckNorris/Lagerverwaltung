@@ -5,7 +5,13 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">@lang('app.edit_storage', ['name' => $storage->name])</div>
+                    <div class="panel-heading">
+                        @if($storage->id == 0)
+                            @lang('app.new_storage')
+                        @else
+                            @lang('app.edit_storage', ['name' => $storage->name])
+                        @endif
+                    </div>
 
                     <div class="panel-body">
                         @if (count($errors) > 0)

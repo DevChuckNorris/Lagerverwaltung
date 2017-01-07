@@ -14,7 +14,7 @@
                                     <td class="col-md-2">{{$s->short_code}}</td>
                                     <td class="col-md-8">{{$s->name}}</td>
                                     <td class="col-md-2 text-right">
-                                        <a href="{{ action('StorageController@edit', ['id' => $s->id]) }}">
+                                        <a href="{{ action('StorageController@newStorageParent', ['parent' => $s->id]) }}">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </a>
                                         <a href="{{ action('StorageController@edit', ['id' => $s->id]) }}">
