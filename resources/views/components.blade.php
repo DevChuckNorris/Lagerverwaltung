@@ -23,10 +23,10 @@
                                 <tr>
                                     <th>@lang('app.component_item_number')</th>
                                     <th>@lang('app.component_description')</th>
+                                    <th>@lang('app.component_storage')</th>
                                     <th>@lang('app.component_quantity')</th>
                                     <th>@lang('app.component_min_quantity')</th>
                                     <th>@lang('app.component_price')</th>
-                                    <th>@lang('app.created_at')</th>
                                     <th>@lang('app.updated_at')</th>
                                 </tr>
                             </thead>
@@ -34,11 +34,20 @@
                                 @foreach($components as $component)
                                     <tr>
                                         <td>{{$component->item_number}}</td>
-                                        <td><a href="#">{{$component->description}}</a></td>
+                                        <td>
+                                            <a href="{{ action('ComponentController@view', ['id' => $component->id]) }}">{{$component->description}}</a>
+                                        </td>
+                                        <td>
+                                            @foreach($component->storage as $cs)
+                                                <span>{{$cs->ref_storage->path()}}</span>
+                                                @if(!$loop->last)
+                                                    <br/>
+                                                @endif
+                                            @endforeach
+                                        </td>
                                         <td>{{$component->quantity}}</td>
                                         <td>{{$component->min_quantity}}</td>
                                         <td>{{$component->price}} &euro;</td>
-                                        <td>{{$component->created_at}}</td>
                                         <td>{{$component->updated_at}}</td>
                                     </tr>
                                 @endforeach

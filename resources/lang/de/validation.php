@@ -121,6 +121,11 @@ return [
         'short'    => 'Kurzname',
         'name'     => 'Name',
         'parent'   => 'Ober-Lager',
+        'item_number' => 'Artikelnummer',
+        'description' => 'Bezeichnung',
+        'quantity' => 'Stückzahl',
+        'min_quantity' => 'Min. Stückzahl',
+        'price' => 'Preis',
     ],
 
 ];

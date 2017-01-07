@@ -22,8 +22,10 @@ return [
     'main_storage' => 'WURZEL',
 
     'components' => 'Bauteile',
+    'edit_component' => '":component" bearbeiten',
     'component_item_number' => 'ID',
     'component_description' => 'Bezeichnung',
+    'component_storage' => 'Lagerplatz',
     'component_quantity' => 'Stückzahl',
     'component_min_quantity' => 'Min. Stückzahl',
     'component_price' => 'Preis',

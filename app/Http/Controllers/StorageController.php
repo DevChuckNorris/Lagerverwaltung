@@ -13,7 +13,7 @@ class StorageController extends Controller
     }
 
     public function index() {
-        $all = $this->allStorage();
+        $all = StorageController::allStorage();
 
         return view('storage', ['storage' => $all]);
     }
@@ -43,7 +43,7 @@ class StorageController extends Controller
 
     public function edit($id) {
         $storage = Storage::find($id);
-        $all = $this->allStorage();
+        $all = StorageController::allStorage();
 
         return view('edit_storage', ['storage' => $storage, 'all' => $all]);
     }
@@ -51,7 +51,7 @@ class StorageController extends Controller
     public function newStorage() {
         $storage = new Storage;
         $storage->id = 0;
-        $all = $this->allStorage();
+        $all = StorageController::allStorage();
 
         return view('edit_storage', ['storage' => $storage, 'all' => $all]);
     }
@@ -60,7 +60,7 @@ class StorageController extends Controller
         $storage = new Storage;
         $storage->id = 0;
         $storage->parent_storage = $parent;
-        $all = $this->allStorage();
+        $all = StorageController::allStorage();
 
         return view('edit_storage', ['storage' => $storage, 'all' => $all]);
     }
@@ -92,23 +92,23 @@ class StorageController extends Controller
         $storage->delete();
     }
 
-    private function allStorage() {
+    public static function allStorage() {
         $storage = Storage::where('parent_storage', null)->get();
         $all = [];
 
         foreach($storage as $s) {
             $all[] = $s;
-            $this->collectChildren($all, $s);
+            StorageController::collectChildren($all, $s);
         }
 
         return $all;
     }
 
-    private function collectChildren(&$storage, $s) {
+    public static function collectChildren(&$storage, $s) {
         $children = $s->children;
         foreach ($children as $s) {
             $storage[] = $s;
-            $this->collectChildren($storage, $s);
+            StorageController::collectChildren($storage, $s);
         }
     }
 }
