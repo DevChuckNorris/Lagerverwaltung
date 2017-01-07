@@ -34,7 +34,7 @@ class StorageController extends Controller
 
         $storage->name = $request->get('name');
         $storage->short_code = $request->get('short');
-        $storage->parent_storage = $request->get('parent');
+        $storage->parent_storage = $request->get('parent') == 0 ? null : $request->get('parent');
 
         $storage->saveOrFail();
 
@@ -50,6 +50,7 @@ class StorageController extends Controller
 
     public function newStorage() {
         $storage = new Storage;
+        $storage->id = 0;
         $all = $this->allStorage();
 
         return view('edit_storage', ['storage' => $storage, 'all' => $all]);

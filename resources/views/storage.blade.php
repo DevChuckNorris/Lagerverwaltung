@@ -8,6 +8,11 @@
                     <div class="panel-heading">@lang('navigation.storage')</div>
 
                     <div class="panel-body">
+
+                        <a href="{{ action('StorageController@newStorage')}}" class="pull-right">
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </a><br /><br />
+
                         <table class="table table-condensed tree">
                             @foreach($storage as $s)
                                 <tr class="treegrid-{{$s->id}} {{$s->parent_storage != null ? 'treegrid-parent-' . $s->parent_storage : ''}}">
