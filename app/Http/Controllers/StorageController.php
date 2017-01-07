@@ -18,6 +18,29 @@ class StorageController extends Controller
         return view('storage', ['storage' => $all]);
     }
 
+    public function editPost(Request $request) {
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'short' => 'required|max:255',
+            'parent' => 'required',
+            'id' => 'required|integer',
+        ]);
+
+        $storage = new Storage;
+        if($request->get('id') != 0) {
+            // old
+            $storage = Storage::find($request->get('id'));
+        }
+
+        $storage->name = $request->get('name');
+        $storage->short_code = $request->get('short');
+        $storage->parent_storage = $request->get('parent');
+
+        $storage->saveOrFail();
+
+        return redirect()->action('StorageController@edit', ['id' => $storage->id]);
+    }
+
     public function edit($id) {
         $storage = Storage::find($id);
         $all = $this->allStorage();

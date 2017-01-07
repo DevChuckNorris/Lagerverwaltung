@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/jquery.treegrid.css" rel="stylesheet">
+    <link href="/css/bootstrap-select.min.css" rel="stylesheet">
     <link href="/css/app.css" rel="stylesheet">
 
     <!-- Scripts -->
@@ -89,5 +90,6 @@
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/jquery.treegrid.min.js"></script>
     <script src="/js/jquery.treegrid.bootstrap3.js"></script>
+    <script src="/js/bootstrap-select.min.js"></script>
 </body>
 </html>

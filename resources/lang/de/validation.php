@@ -118,6 +118,9 @@ return [
         'username' => 'Benutzername',
         'password' => 'Passwort',
         'email'    => 'E-Mail-Adresse',
+        'short'    => 'Kurzname',
+        'name'     => 'Name',
+        'parent'   => 'Ober-Lager',
     ],
 
 ];

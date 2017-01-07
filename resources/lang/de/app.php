@@ -2,6 +2,7 @@
 
 return [
 
+    'please_select' => 'Bitte auswählen',
     'save' => 'Speichern',
     'edit'   => 'Bearbeiten',
     'delete'   => 'Löschen',
@@ -14,5 +15,6 @@ return [
     'storage_name' => 'Name',
     'storage_short' => 'Kurzname',
     'storage_parent' => 'Ober-Lager',
+    'main_storage' => 'WURZEL',
 
 ];
