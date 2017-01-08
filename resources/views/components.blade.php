@@ -12,7 +12,7 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-md-2">
-                                <a class="btn btn-primary">@lang('app.new')</a>
+                                <a href="{{action('ComponentController@view', ['id' => 0])}}" class="btn btn-primary">@lang('app.new')</a>
                             </div>
                         </div>
 

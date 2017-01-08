@@ -86,6 +86,15 @@
         </nav>
 
         @yield('content')
+
+        <footer>
+            <div class="container">
+                <p class="text-muted">
+                    Copyright &copy; Jonas Bernemann 2017.
+                    <a href="https://github.com/devchucknorris/lagerverwaltung">GitHub</a>
+                </p>
+            </div>
+        </footer>
     </div>
 
     <!-- Scripts -->

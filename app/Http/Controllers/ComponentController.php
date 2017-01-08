@@ -16,6 +16,11 @@ class ComponentController extends Controller
 
     public function view($id) {
         $component = Component::find($id);
+        if($component == null) {
+            $component = new Component;
+            $component->id = 0;
+        }
+
         $all = StorageController::allStorage();
 
         return view('component', [

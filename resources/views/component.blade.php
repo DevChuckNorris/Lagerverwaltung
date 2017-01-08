@@ -10,6 +10,16 @@
                     </div>
 
                     <div class="panel-body">
+                        @if (count($errors) > 0)
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <form class="form-horizontal" method="post">
                             {!! csrf_field() !!}
 
@@ -68,7 +78,7 @@
                                 <div class="col-md-6">
                                     <div class="input-group">
                                         <span class="input-group-addon">&euro;</span>
-                                        <input type="number"
+                                        <input type="text"
                                                class="form-control"
                                                id="price"
                                                name="price"
