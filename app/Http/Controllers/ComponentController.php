@@ -34,8 +34,8 @@ class ComponentController extends Controller
             'item_number' => 'required|max:255',
             'description' => 'required',
             'id' => 'required|integer',
-            'quantity' => 'required|integer',
-            'min_quantity' => 'required|integer',
+            'quantity' => 'required|integer|min:0',
+            'min_quantity' => 'required|integer|min:0',
             'price' => 'required|numeric',
         ]);
 
