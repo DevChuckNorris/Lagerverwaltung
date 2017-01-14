@@ -28,4 +28,8 @@ class Storage extends Model
     public function parent() {
         return $this->belongsTo('App\Storage', 'parent_storage');
     }
+
+    public function sameLevelStorage() {
+        return Storage::where('parent_storage', $this->parent_storage)->get();
+    }
 }

@@ -9,6 +9,7 @@ return [
     'created_at' => 'Erstellt am',
     'updated_at' => 'Zuletzt aktualisiert',
     'new' => 'Neu',
+    'error' => 'Es ist ein Fehler aufgetreten',
 
     'new_storage' => 'Neues Lager anlegen',
     'edit_storage' => ':name bearbeiten',

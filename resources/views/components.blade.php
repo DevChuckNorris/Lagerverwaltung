@@ -26,7 +26,6 @@
                                     <th>@lang('app.component_storage')</th>
                                     <th>@lang('app.component_quantity')</th>
                                     <th>@lang('app.component_min_quantity')</th>
-                                    <th>@lang('app.component_price')</th>
                                     <th>@lang('app.updated_at')</th>
                                 </tr>
                             </thead>
@@ -47,7 +46,6 @@
                                         </td>
                                         <td>{{$component->quantity}}</td>
                                         <td>{{$component->min_quantity}}</td>
-                                        <td>{{$component->price}} &euro;</td>
                                         <td>{{$component->updated_at}}</td>
                                     </tr>
                                 @endforeach

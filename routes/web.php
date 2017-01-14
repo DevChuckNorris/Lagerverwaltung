@@ -24,3 +24,5 @@ Route::get('/storage/{parent}/new/', 'StorageController@newStorageParent');
 Route::get('/components', 'ComponentController@listComponents');
 Route::get('/component/{id}', 'ComponentController@view');
 Route::post('/component/{id}', 'ComponentController@save');
+Route::get('/component/{id}/quantity/{quantity}', 'ComponentController@updateQuantity');
+Route::get('/component/storage/children/{id}', 'ComponentController@storageChildren');

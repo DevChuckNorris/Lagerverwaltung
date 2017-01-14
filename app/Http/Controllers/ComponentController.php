@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Component;
 use App\ComponentStorage;
+use App\Storage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ComponentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function listComponents() {
         return view('components', [
             'components' => Component::all()
@@ -21,11 +28,11 @@ class ComponentController extends Controller
             $component->id = 0;
         }
 
-        $all = StorageController::allStorage();
+        $rootStorage = Storage::where('parent_storage', null)->get();
 
         return view('component', [
             'component' => $component,
-            'all' => $all
+            'rootStorage' => $rootStorage
         ]);
     }
 
@@ -52,18 +59,29 @@ class ComponentController extends Controller
 
         $component->saveOrFail();
 
+        $storageIds = [];
+        for($i = 0; $i < $request->get('storage'); $i++) {
+            // Get last id
+            $last = $request->get('storage-' . $i) - 1;
+            $storageIds[] = $request->get('storage-' . $i . '-' . $last);
+        }
+
+        //print_r($storageIds);
 
         $cStorage = $component->storage;
         // Store storage
         // Check unchecks
         foreach ($cStorage as $storage) {
-            if(!in_array($storage->id, $request->get('storage'))) {
+            if(!in_array($storage->ref_storage->id, $storageIds)) {
                 // delete
                 $storage->delete();
+                //echo "Would delete " . $storage->ref_storage->id;
+
+                //Log::info("Delete " . $storage->ref_storage->id . " because it's not in the array " . implode(",", $storageIds));
             }
         }
         // Check new checks
-        foreach($request->get('storage') as $storage) {
+        foreach($storageIds as $storage) {
             $found = false;
 
             foreach ($cStorage as $cs) {
@@ -82,5 +100,29 @@ class ComponentController extends Controller
         }
 
         return redirect()->action('ComponentController@view', ['id' => $component->id]);
+    }
+
+    public function updateQuantity($id, $quantity) {
+        $component = Component::find($id);
+        $component->quantity += $quantity;
+        $component->saveOrFail();
+
+        return $component->quantity;
+    }
+
+    public function storageChildren($id) {
+        $return = [];
+
+        $storage = Storage::where('parent_storage', $id)->orderBy('name', 'asc')->get();
+        foreach ($storage as $s) {
+            $return[] = [
+                "id" => $s->id,
+                "name" => $s->name,
+                "short" => $s->short_code,
+                "children" => sizeof($s->children)
+            ];
+        }
+
+        return response()->json($return);
     }
 }

@@ -54,11 +54,38 @@
                             <div class="form-group">
                                 <label for="quantity" class="col-md-4 control-label">@lang('app.component_quantity')</label>
                                 <div class="col-md-6">
-                                    <input type="number"
-                                           class="form-control"
-                                           id="quantity"
-                                           name="quantity"
-                                           value="{{old('quantity') ?: $component->quantity}}" />
+                                    <div class="input-group">
+                                        <input type="number"
+                                               class="form-control"
+                                               id="quantity"
+                                               name="quantity"
+                                               value="{{old('quantity') ?: $component->quantity}}" />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button" id="quantityPlus">+</button>
+                                            <button class="btn btn-default" type="button" id="quantityMinus">-</button>
+                                        </span>
+                                    </div>
+
+
+                                    <script>
+                                        $(document).ready(function() {
+                                            function updateQuantity(count) {
+                                                $.get('/component/{{$component->id}}/quantity/' + count, function(data) {
+                                                    $('#quantity').val(data);
+                                                }).fail(function () {
+                                                    alert("@lang('app.error')");
+                                                });
+                                            }
+
+                                            $('#quantityPlus').click(function() {
+                                                updateQuantity(1);
+                                            });
+
+                                            $('#quantityMinus').click(function() {
+                                                updateQuantity(-1);
+                                            });
+                                        });
+                                    </script>
                                 </div>
                             </div>
 
@@ -87,20 +114,96 @@
                                 </div>
                             </div>
 
+                            <script>
+                                function assignStorageSelect(selector, root, sub) {
+                                    $(selector).change(function() {
+                                        var option = $(this).find(":selected");
+
+                                        if(option.attr('data-haschildren') == '1') {
+                                            // make full path, for pulling sub children
+                                            $.get('/component/storage/children/' + option.val(), function (data) {
+                                                var newId = "storage-" + root + "-" + (sub+1);
+
+                                                // Create new select
+                                                var group = $('<div class="input-group"></div>');
+                                                var select = $('<select class="form-control" name="'+newId+'" id="'+newId+'"></select>');
+                                                group.append(select);
+
+                                                select.append('<option value="0">@lang("app.please_select")</option>');
+                                                $.each(data, function() {
+                                                    var hasChildren = this.children > 0 ? 1 : 0;
+                                                    select.append('<option data-haschildren="'+hasChildren+'" value="' + this.id + '">' + this.name + '</option>');
+                                                });
+
+                                                var btnGroup = $('<span class="input-group-btn"></span>');
+                                                var btn = $('<button class="btn btn-default" type="button" id="auto-' + newId + '">Auto</button>');
+                                                btnGroup.append(btn);
+                                                group.append(btnGroup);
+
+                                                var currentNew = $('#'+newId);
+                                                if(currentNew.length > 0) {
+                                                    currentNew.parent().remove();
+
+                                                    var i = sub+2;
+                                                    while(true) {
+                                                        currentNew = $('#storage-' + root + '-' + i);
+
+                                                        if(currentNew.length > 0) {
+                                                            currentNew.parent().remove();
+                                                        } else {
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+
+                                                group.insertAfter($(selector).parent());
+                                                assignStorageSelect("#"+newId, root, sub+1);
+
+                                                // set input
+                                                $('#storage-' + root).val(sub+2);
+                                            });
+                                        } else {
+                                            // no children no pull needed, we are done here
+                                        }
+                                    });
+                                }
+                            </script>
+
                             <div class="form-group">
-                                <label for="storage" class="col-md-4 control-label">@lang('app.component_storage')</label>
-                                <div class="col-md-6">
-                                    <select class="form-control selectpicker" name="storage[]" id="storage" data-live-search="true" multiple>
-                                        @foreach($all as $s)
-                                            @if(sizeof($s->children) == 0)
-                                                <option {{$component->isInStorage($s->id) ? 'selected="selected"' : ''}} value="{{$s->id}}">
-                                                    {{$s->path()}}
-                                                </option>
-                                            @endif
+                                <label for="storage-1" class="col-md-4 control-label">@lang('app.component_storage')</label>
+                                <div class="col-md-6" id="storageSelect">
+                                    @foreach($component->storageStructure() as $storagePath)
+                                        @foreach($storagePath as $storage)
+                                            <div class="input-group">
+                                                <select class="form-control" id="storage-{{$loop->parent->index}}-{{$loop->index}}" name="storage-{{$loop->parent->index}}-{{$loop->index}}">
+                                                    <option value="0">@lang('app.please_select')</option>
+                                                    @foreach($storage->sameLevelStorage() as $s)
+                                                        <option
+                                                                {{$s->id == $storage->id ? "selected" : ""}}
+                                                                value="{{$s->id}}"
+                                                                data-haschildren="{{sizeof($s->children) > 0}}">
+                                                            {{$s->name}}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default" type="button" id="auto-storage-{{$loop->parent->index}}-{{$loop->index}}">Auto</button>
+                                                </span>
+                                            </div>
+
+                                            <script>
+                                                assignStorageSelect('#storage-{{$loop->parent->index}}-{{$loop->index}}', {{$loop->parent->index}}, {{$loop->index}});
+                                            </script>
                                         @endforeach
-                                    </select>
+
+                                        <input type="hidden" id="storage-{{$loop->index}}" value="{{sizeof($storagePath)}}" name="storage-{{$loop->index}}" value="{{sizeof($storagePath)}}" />
+                                        <hr/>
+                                    @endforeach
                                 </div>
                             </div>
+
+                            <input type="hidden" id="storage" name="storage" value="{{sizeof($component->storageStructure())}}" />
 
                             <div class="form-group">
                                 <div class="col-md-8 col-md-offset-4">
