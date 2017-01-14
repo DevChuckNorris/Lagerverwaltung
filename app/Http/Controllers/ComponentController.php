@@ -59,14 +59,22 @@ class ComponentController extends Controller
 
         $component->saveOrFail();
 
+        //echo '<pre>';
+        //print_r($request->all());
+        //echo '</pre>';
+
         $storageIds = [];
         for($i = 0; $i < $request->get('storage'); $i++) {
+            //echo $i . " ";
             // Get last id
             $last = $request->get('storage-' . $i) - 1;
+            //echo $last . '<br/>';
             $storageIds[] = $request->get('storage-' . $i . '-' . $last);
         }
 
         //print_r($storageIds);
+
+        //return;
 
         $cStorage = $component->storage;
         // Store storage
@@ -82,6 +90,8 @@ class ComponentController extends Controller
         }
         // Check new checks
         foreach($storageIds as $storage) {
+            if($storage == 0) continue;
+
             $found = false;
 
             foreach ($cStorage as $cs) {
@@ -113,7 +123,7 @@ class ComponentController extends Controller
     public function storageChildren($id) {
         $return = [];
 
-        $storage = Storage::where('parent_storage', $id)->orderBy('name', 'asc')->get();
+        $storage = Storage::where('parent_storage', $id == 0 ? null : $id)->orderBy('name', 'asc')->get();
         foreach ($storage as $s) {
             $return[] = [
                 "id" => $s->id,

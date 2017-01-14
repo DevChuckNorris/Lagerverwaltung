@@ -30,12 +30,12 @@ class Component extends Model
             $ret[] = $s;
         }
 
-        if(sizeof($ret) == 0) {
+        //if(sizeof($ret) == 0) {
             // Create dummy
             $ret[] = [
                 new Storage
             ];
-        }
+        //s}
 
         return $ret;
     }

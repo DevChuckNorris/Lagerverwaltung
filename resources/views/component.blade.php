@@ -115,30 +115,36 @@
                             </div>
 
                             <script>
-                                function assignStorageSelect(selector, root, sub) {
+                                function createSelect(newId, data) {
+                                    var group = $('<div class="input-group"></div>');
+                                    var select = $('<select class="form-control" name="'+newId+'" id="'+newId+'"></select>');
+                                    group.append(select);
+
+                                    select.append('<option value="0">@lang("app.please_select")</option>');
+                                    $.each(data, function() {
+                                        var hasChildren = this.children > 0 ? 1 : 0;
+                                        select.append('<option data-haschildren="'+hasChildren+'" value="' + this.id + '">' + this.name + '</option>');
+                                    });
+
+                                    var btnGroup = $('<span class="input-group-btn"></span>');
+                                    var btn = $('<button class="btn btn-default" type="button" id="auto-' + newId + '">Auto</button>');
+                                    btnGroup.append(btn);
+                                    group.append(btnGroup);
+
+                                    return group;
+                                }
+
+                                function assignStorageSelect(selector, $root, sub) {
                                     $(selector).change(function() {
                                         var option = $(this).find(":selected");
 
                                         if(option.attr('data-haschildren') == '1') {
                                             // make full path, for pulling sub children
                                             $.get('/component/storage/children/' + option.val(), function (data) {
-                                                var newId = "storage-" + root + "-" + (sub+1);
+                                                var newId = "storage-" + $root + "-" + (sub+1);
 
                                                 // Create new select
-                                                var group = $('<div class="input-group"></div>');
-                                                var select = $('<select class="form-control" name="'+newId+'" id="'+newId+'"></select>');
-                                                group.append(select);
-
-                                                select.append('<option value="0">@lang("app.please_select")</option>');
-                                                $.each(data, function() {
-                                                    var hasChildren = this.children > 0 ? 1 : 0;
-                                                    select.append('<option data-haschildren="'+hasChildren+'" value="' + this.id + '">' + this.name + '</option>');
-                                                });
-
-                                                var btnGroup = $('<span class="input-group-btn"></span>');
-                                                var btn = $('<button class="btn btn-default" type="button" id="auto-' + newId + '">Auto</button>');
-                                                btnGroup.append(btn);
-                                                group.append(btnGroup);
+                                                var group = createSelect(newId, data);
 
                                                 var currentNew = $('#'+newId);
                                                 if(currentNew.length > 0) {
@@ -146,7 +152,7 @@
 
                                                     var i = sub+2;
                                                     while(true) {
-                                                        currentNew = $('#storage-' + root + '-' + i);
+                                                        currentNew = $('#storage-' + $root + '-' + i);
 
                                                         if(currentNew.length > 0) {
                                                             currentNew.parent().remove();
@@ -157,20 +163,36 @@
                                                 }
 
                                                 group.insertAfter($(selector).parent());
-                                                assignStorageSelect("#"+newId, root, sub+1);
+                                                assignStorageSelect("#"+newId, $root, sub+1);
 
                                                 // set input
-                                                $('#storage-' + root).val(sub+2);
+                                                $('#storage-' + $root).val(sub+2);
                                             });
                                         } else {
-                                            // no children no pull needed, we are done here
+                                            if(option.val() == 0) return;
+                                            // no children no pull needed, add new storage selection
+                                            var root = parseInt($('#storage').val());
+                                            $('#storage').val(root+1);
+
+                                            $.get('/component/storage/children/0', function(data) {
+                                                var select = createSelect('storage-' + root + '-' + 0, data);
+
+                                                var div = $('#storageSelect');
+                                                div.append(select);
+                                                div.append($('<input type="hidden" name="storage-'+root+'" id="storage-'+root+'" value="1" />'));
+                                                div.append($('<hr />'));
+
+                                                assignStorageSelect('#storage-' + root + '-' + 0, root, 0);
+                                            });
                                         }
                                     });
                                 }
                             </script>
 
                             <div class="form-group">
-                                <label for="storage-1" class="col-md-4 control-label">@lang('app.component_storage')</label>
+                                <label for="storage-1" class="col-md-4 control-label">
+                                    @lang('app.component_storage')
+                                </label>
                                 <div class="col-md-6" id="storageSelect">
                                     @foreach($component->storageStructure() as $storagePath)
                                         @foreach($storagePath as $storage)
