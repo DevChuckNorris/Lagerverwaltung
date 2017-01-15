@@ -34,7 +34,10 @@
                                     <tr id="component-{{$component->id}}">
                                         <td>{{$component->item_number}}</td>
                                         <td>
-                                            <a href="{{ action('ComponentController@view', ['id' => $component->id]) }}">{{$component->description}}</a>
+                                            <a {{$component->runs_out ? 'class=strike ' : ''}}
+                                               href="{{ action('ComponentController@view', ['id' => $component->id]) }}">
+                                                {{$component->description}}
+                                            </a>
                                         </td>
                                         <td>
                                             @foreach($component->storage as $cs)
@@ -46,12 +49,14 @@
                                         </td>
                                         <td>
                                             <span class="quantity">{{$component->quantity}}</span>
-                                            <span class="pull-right">
-                                                <div class="btn-group">
-                                                    <button class="btn btn-default" onclick="quantity({{$component->id}}, 1)">+</button>
-                                                    <button class="btn btn-default" onclick="quantity({{$component->id}}, -1)">-</button>
-                                                </div>
-                                            </span>
+                                            @if(!$component->runs_out)
+                                                <span class="pull-right">
+                                                    <div class="btn-group">
+                                                        <button class="btn btn-default" onclick="quantity({{$component->id}}, 1)">+</button>
+                                                        <button class="btn btn-default" onclick="quantity({{$component->id}}, -1)">-</button>
+                                                    </div>
+                                                </span>
+                                            @endif
                                         </td>
                                         <td>{{$component->min_quantity}}</td>
                                         <td>{{$component->updated_at}}</td>

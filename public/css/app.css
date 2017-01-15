@@ -32,3 +32,7 @@ footer > .container {
 footer > .container > .text-muted {
     margin: 20px 0;
 }
+
+.strike {
+    text-decoration: line-through;
+}

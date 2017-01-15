@@ -51,30 +51,30 @@ class ComponentController extends Controller
             $component = Component::find($id);
         }
 
-        $component->item_number = $request->get('item_number');
-        $component->description = $request->get('description');
-        $component->quantity = $request->get('quantity');
-        $component->min_quantity = $request->get('min_quantity');
-        $component->price = $request->get('price');
+        if(!$component->runs_out) {
+            $component->item_number = $request->get('item_number');
+            $component->description = $request->get('description');
+            $component->quantity = $request->get('quantity');
+            $component->min_quantity = $request->get('min_quantity');
+            $component->price = $request->get('price');
+            $component->runs_out = $request->has('out');
+        }
+        if($component->runs_out) {
+            $component->quantity = 0;
+            $component->min_quantity = 0;
+        }
 
         $component->saveOrFail();
 
-        //echo '<pre>';
-        //print_r($request->all());
-        //echo '</pre>';
-
         $storageIds = [];
         for($i = 0; $i < $request->get('storage'); $i++) {
-            //echo $i . " ";
-            // Get last id
             $last = $request->get('storage-' . $i) - 1;
-            //echo $last . '<br/>';
             $storageIds[] = $request->get('storage-' . $i . '-' . $last);
         }
 
-        //print_r($storageIds);
-
-        //return;
+        if($component->runs_out) {
+            $storageIds = []; // Force delete of all storage
+        }
 
         $cStorage = $component->storage;
         // Store storage
@@ -83,9 +83,6 @@ class ComponentController extends Controller
             if(!in_array($storage->ref_storage->id, $storageIds)) {
                 // delete
                 $storage->delete();
-                //echo "Would delete " . $storage->ref_storage->id;
-
-                //Log::info("Delete " . $storage->ref_storage->id . " because it's not in the array " . implode(",", $storageIds));
             }
         }
         // Check new checks
@@ -114,6 +111,8 @@ class ComponentController extends Controller
 
     public function updateQuantity($id, $quantity) {
         $component = Component::find($id);
+        if($component->runs_out) return $component->quantity;
+
         $component->quantity += $quantity;
         $component->saveOrFail();
 

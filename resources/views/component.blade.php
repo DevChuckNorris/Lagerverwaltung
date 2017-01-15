@@ -20,7 +20,7 @@
                             </div>
                         @endif
 
-                        <form class="form-horizontal" method="post">
+                        <form id="componentForm" class="form-horizontal" method="post">
                             {!! csrf_field() !!}
 
                             <div class="form-group">
@@ -30,6 +30,7 @@
                                            class="form-control"
                                            id="item_number"
                                            name="item_number"
+                                           {{$component->runs_out ? "disabled " : ""}}
                                            value="{{old('item_number') ?: $component->item_number}}" />
                                 </div>
                             </div>
@@ -41,6 +42,7 @@
                                            class="form-control"
                                            id="description"
                                            name="description"
+                                           {{$component->runs_out ? "disabled " : ""}}
                                            value="{{old('description') ?: $component->description}}" />
                                 </div>
                             </div>
@@ -53,10 +55,15 @@
                                                class="form-control"
                                                id="quantity"
                                                name="quantity"
+                                               {{$component->runs_out ? "disabled " : ""}}
                                                value="{{old('quantity') ?: $component->quantity}}" />
                                         <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button" id="quantityPlus">+</button>
-                                            <button class="btn btn-default" type="button" id="quantityMinus">-</button>
+                                            <button
+                                                    {{$component->runs_out ? "disabled " : ""}}
+                                                    class="btn btn-default" type="button" id="quantityPlus">+</button>
+                                            <button
+                                                    {{$component->runs_out ? "disabled " : ""}}
+                                                    class="btn btn-default" type="button" id="quantityMinus">-</button>
                                         </span>
                                     </div>
 
@@ -90,6 +97,7 @@
                                            class="form-control"
                                            id="min_quantity"
                                            name="min_quantity"
+                                           {{$component->runs_out ? "disabled " : ""}}
                                            value="{{old('min_quantity') ?: $component->min_quantity}}" />
                                 </div>
                             </div>
@@ -103,8 +111,37 @@
                                                class="form-control"
                                                id="price"
                                                name="price"
+                                               {{$component->runs_out ? "disabled " : ""}}
                                                value="{{old('price') ?: $component->price}}" />
                                     </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                function confirmChange(elem, text) {
+                                    if($(elem).is(':checked')) {
+                                        // Show confirmation
+                                        if(!confirm(text)) {
+                                            $(elem).prop('checked', false);
+                                        } else {
+                                            $('#componentForm').submit();
+                                        }
+                                    }
+                                }
+                            </script>
+
+                            <div class="form-group">
+                                <div class="col-md-6 col-md-offset-4">
+                                    <label for="out" class="checkbox-inline">
+                                        <input
+                                                {{$component->runs_out ? "checked " : ""}}
+                                                type="checkbox"
+                                                name="out"
+                                                id="out"
+                                                {{$component->runs_out ? "disabled " : ""}}
+                                                onchange="confirmChange(this, '@lang("app.component_confirm_out")');" />
+                                        @lang('app.component_runs_out')
+                                    </label>
                                 </div>
                             </div>
 
@@ -237,7 +274,9 @@
                                         @foreach($storagePath as $storage)
                                             @if($loop->first)
                                                 <div class="input-group">
-                                                    <select class="form-control" id="storage-{{$loop->parent->index}}-{{$loop->index}}" name="storage-{{$loop->parent->index}}-{{$loop->index}}">
+                                                    <select
+                                                            {{$component->runs_out ? "disabled " : ""}}
+                                                            class="form-control" id="storage-{{$loop->parent->index}}-{{$loop->index}}" name="storage-{{$loop->parent->index}}-{{$loop->index}}">
                                                         <option value="0">@lang('app.please_select')</option>
                                                         @foreach($storage->sameLevelStorage() as $s)
                                                             <option
@@ -251,6 +290,7 @@
 
                                                     <span class="input-group-btn">
                                                         <button
+                                                                {{$component->runs_out ? "disabled " : ""}}
                                                                 class="btn btn-default"
                                                                 type="button"
                                                                 id="auto-storage-{{$loop->parent->index}}-{{$loop->index}}"
@@ -258,7 +298,9 @@
                                                     </span>
                                                 </div>
                                             @else
-                                                <select class="form-control" id="storage-{{$loop->parent->index}}-{{$loop->index}}" name="storage-{{$loop->parent->index}}-{{$loop->index}}">
+                                                <select
+                                                        {{$component->runs_out ? "disabled " : ""}}
+                                                        class="form-control" id="storage-{{$loop->parent->index}}-{{$loop->index}}" name="storage-{{$loop->parent->index}}-{{$loop->index}}">
                                                     <option value="0">@lang('app.please_select')</option>
                                                     @foreach($storage->sameLevelStorage() as $s)
                                                         <option
@@ -284,14 +326,16 @@
 
                             <input type="hidden" id="storage" name="storage" value="{{sizeof($component->storageStructure())}}" />
 
-                            <div class="form-group">
-                                <div class="col-md-8 col-md-offset-4">
-                                    <input type="hidden" name="id" value="{{$component->id}}">
-                                    <button type="submit" class="btn btn-primary">
-                                        @lang('app.save')
-                                    </button>
+                            @if(!$component->runs_out)
+                                <div class="form-group">
+                                    <div class="col-md-8 col-md-offset-4">
+                                        <input type="hidden" name="id" value="{{$component->id}}">
+                                        <button type="submit" class="btn btn-primary">
+                                            @lang('app.save')
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         </form>
                     </div>
                 </div>

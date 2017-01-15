@@ -31,4 +31,6 @@ return [
     'component_quantity' => 'Stückzahl',
     'component_min_quantity' => 'Min. Stückzahl',
     'component_price' => 'Preis',
+    'component_runs_out' => 'Bauteil läuft aus',
+    'component_confirm_out' => 'Durch diese Option wird der Bestand auf 0 gesetzt und das Lagerplatz wird wieder freigegeben. Bist du dir sicher?',
 ];
