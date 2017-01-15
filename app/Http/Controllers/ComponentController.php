@@ -51,14 +51,12 @@ class ComponentController extends Controller
             $component = Component::find($id);
         }
 
-        if(!$component->runs_out) {
-            $component->item_number = $request->get('item_number');
-            $component->description = $request->get('description');
-            $component->quantity = $request->get('quantity');
-            $component->min_quantity = $request->get('min_quantity');
-            $component->price = $request->get('price');
-            $component->runs_out = $request->has('out');
-        }
+        $component->item_number = $request->get('item_number');
+        $component->description = $request->get('description');
+        $component->quantity = $request->get('quantity');
+        $component->min_quantity = $request->get('min_quantity');
+        $component->price = $request->get('price');
+        $component->runs_out = $request->has('out');
         if($component->runs_out) {
             $component->quantity = 0;
             $component->min_quantity = 0;

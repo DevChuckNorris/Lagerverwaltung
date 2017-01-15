@@ -126,6 +126,8 @@
                                         } else {
                                             $('#componentForm').submit();
                                         }
+                                    } else {
+                                        $('*:disabled').prop('disabled', false);
                                     }
                                 }
                             </script>
@@ -138,7 +140,6 @@
                                                 type="checkbox"
                                                 name="out"
                                                 id="out"
-                                                {{$component->runs_out ? "disabled " : ""}}
                                                 onchange="confirmChange(this, '@lang("app.component_confirm_out")');" />
                                         @lang('app.component_runs_out')
                                     </label>
@@ -326,16 +327,14 @@
 
                             <input type="hidden" id="storage" name="storage" value="{{sizeof($component->storageStructure())}}" />
 
-                            @if(!$component->runs_out)
-                                <div class="form-group">
-                                    <div class="col-md-8 col-md-offset-4">
-                                        <input type="hidden" name="id" value="{{$component->id}}">
-                                        <button type="submit" class="btn btn-primary">
-                                            @lang('app.save')
-                                        </button>
-                                    </div>
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-4">
+                                    <input type="hidden" name="id" value="{{$component->id}}">
+                                    <button {{$component->runs_out ? "disabled " : ""}} type="submit" class="btn btn-primary">
+                                        @lang('app.save')
+                                    </button>
                                 </div>
-                            @endif
+                            </div>
                         </form>
                     </div>
                 </div>
