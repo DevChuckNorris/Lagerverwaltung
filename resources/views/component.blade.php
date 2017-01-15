@@ -139,22 +139,27 @@
                                 }
 
                                 function createSelect(newId, data, root, sub) {
-                                    var group = $('<div class="input-group"></div>');
                                     var select = $('<select class="form-control" name="'+newId+'" id="'+newId+'"></select>');
-                                    group.append(select);
-
                                     select.append('<option value="0">@lang("app.please_select")</option>');
                                     $.each(data, function() {
                                         var hasChildren = this.children > 0 ? 1 : 0;
                                         select.append('<option data-haschildren="'+hasChildren+'" value="' + this.id + '">' + this.name + '</option>');
                                     });
 
-                                    var btnGroup = $('<span class="input-group-btn"></span>');
-                                    var btn = $('<button class="btn btn-default" type="button" id="auto-' + newId + '" onclick="searchFreeStorage('+root+', '+sub+')">Auto</button>');
-                                    btnGroup.append(btn);
-                                    group.append(btnGroup);
+                                    if(sub == 0) {
+                                        var group = $('<div class="input-group"></div>');
 
-                                    return group;
+                                        group.append(select);
+
+                                        var btnGroup = $('<span class="input-group-btn"></span>');
+                                        var btn = $('<button class="btn btn-default" type="button" id="auto-' + newId + '" onclick="searchFreeStorage('+root+', '+sub+')">Auto</button>');
+                                        btnGroup.append(btn);
+                                        group.append(btnGroup);
+
+                                        return group;
+                                    } else {
+                                        return select;
+                                    }
                                 }
 
                                 function assignStorageSelect(selector, $root, sub) {
@@ -187,7 +192,11 @@
                                                     }
                                                 }
 
-                                                group.insertAfter($(selector).parent());
+                                                if($(selector).parent().hasClass("input-group")) {
+                                                    group.insertAfter($(selector).parent());
+                                                } else {
+                                                    group.insertAfter($(selector));
+                                                }
                                                 assignStorageSelect("#"+newId, $root, sub+1);
 
                                                 // set input
@@ -226,7 +235,29 @@
                                 <div class="col-md-6" id="storageSelect">
                                     @foreach($component->storageStructure() as $storagePath)
                                         @foreach($storagePath as $storage)
-                                            <div class="input-group">
+                                            @if($loop->first)
+                                                <div class="input-group">
+                                                    <select class="form-control" id="storage-{{$loop->parent->index}}-{{$loop->index}}" name="storage-{{$loop->parent->index}}-{{$loop->index}}">
+                                                        <option value="0">@lang('app.please_select')</option>
+                                                        @foreach($storage->sameLevelStorage() as $s)
+                                                            <option
+                                                                    {{$s->id == $storage->id ? "selected" : ""}}
+                                                                    value="{{$s->id}}"
+                                                                    data-haschildren="{{sizeof($s->children) > 0}}">
+                                                                {{$s->name}}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    <span class="input-group-btn">
+                                                        <button
+                                                                class="btn btn-default"
+                                                                type="button"
+                                                                id="auto-storage-{{$loop->parent->index}}-{{$loop->index}}"
+                                                                onclick="searchFreeStorage({{$loop->parent->index}}, {{$loop->index}})">Auto</button>
+                                                    </span>
+                                                </div>
+                                            @else
                                                 <select class="form-control" id="storage-{{$loop->parent->index}}-{{$loop->index}}" name="storage-{{$loop->parent->index}}-{{$loop->index}}">
                                                     <option value="0">@lang('app.please_select')</option>
                                                     @foreach($storage->sameLevelStorage() as $s)
@@ -238,15 +269,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-
-                                                <span class="input-group-btn">
-                                                    <button
-                                                            class="btn btn-default"
-                                                            type="button"
-                                                            id="auto-storage-{{$loop->parent->index}}-{{$loop->index}}"
-                                                            onclick="searchFreeStorage({{$loop->parent->index}}, {{$loop->index}})">Auto</button>
-                                                </span>
-                                            </div>
+                                            @endif
 
                                             <script>
                                                 assignStorageSelect('#storage-{{$loop->parent->index}}-{{$loop->index}}', {{$loop->parent->index}}, {{$loop->index}});
