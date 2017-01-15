@@ -35,12 +35,6 @@
                             </div>
 
                             <div class="form-group">
-                                <div class="col-md-6 col-md-offset-6">
-                                    BARCODE
-                                </div>
-                            </div>
-
-                            <div class="form-group">
                                 <label for="description" class="col-md-4 control-label">@lang('app.component_description')</label>
                                 <div class="col-md-6">
                                     <input type="text"
@@ -115,7 +109,36 @@
                             </div>
 
                             <script>
-                                function createSelect(newId, data) {
+                                function setValue(root, sub, data) {
+                                    var s = $('#storage-' + root + '-' + sub);
+                                    s.val(data.free[sub]);
+                                    console.log("Set value for", root, sub, data.free, data.free.length);
+
+                                    s.trigger('change');
+
+                                    if(data.free.length-1 > sub) {
+                                        setValue(root, sub + 1, data);
+                                    }
+                                }
+
+                                function searchFreeStorage(root, sub) {
+                                    var select = $('#storage-' + root + '-' + sub);
+                                    var id = select.val();
+
+                                    $.get('/storage/' + id + '/free', function(data) {
+                                        if(data.free == 0) {
+                                            alert('@lang("app.no_free_storage")');
+                                        } else {
+                                            setValue(root, sub+1, data);
+                                        }
+                                    }).fail(function () {
+                                        alert("@lang('app.error')");
+                                    });
+
+                                    //alert(root + ' ' + sub + ': ' + id);
+                                }
+
+                                function createSelect(newId, data, root, sub) {
                                     var group = $('<div class="input-group"></div>');
                                     var select = $('<select class="form-control" name="'+newId+'" id="'+newId+'"></select>');
                                     group.append(select);
@@ -127,7 +150,7 @@
                                     });
 
                                     var btnGroup = $('<span class="input-group-btn"></span>');
-                                    var btn = $('<button class="btn btn-default" type="button" id="auto-' + newId + '">Auto</button>');
+                                    var btn = $('<button class="btn btn-default" type="button" id="auto-' + newId + '" onclick="searchFreeStorage('+root+', '+sub+')">Auto</button>');
                                     btnGroup.append(btn);
                                     group.append(btnGroup);
 
@@ -136,6 +159,8 @@
 
                                 function assignStorageSelect(selector, $root, sub) {
                                     $(selector).change(function() {
+                                        console.log("Select box changed", $root, sub);
+
                                         var option = $(this).find(":selected");
 
                                         if(option.attr('data-haschildren') == '1') {
@@ -144,7 +169,7 @@
                                                 var newId = "storage-" + $root + "-" + (sub+1);
 
                                                 // Create new select
-                                                var group = createSelect(newId, data);
+                                                var group = createSelect(newId, data, $root, sub+1);
 
                                                 var currentNew = $('#'+newId);
                                                 if(currentNew.length > 0) {
@@ -175,7 +200,7 @@
                                             $('#storage').val(root+1);
 
                                             $.get('/component/storage/children/0', function(data) {
-                                                var select = createSelect('storage-' + root + '-' + 0, data);
+                                                var select = createSelect('storage-' + root + '-' + 0, data, root, 0);
 
                                                 var div = $('#storageSelect');
                                                 div.append(select);
@@ -210,7 +235,11 @@
                                                 </select>
 
                                                 <span class="input-group-btn">
-                                                    <button class="btn btn-default" type="button" id="auto-storage-{{$loop->parent->index}}-{{$loop->index}}">Auto</button>
+                                                    <button
+                                                            class="btn btn-default"
+                                                            type="button"
+                                                            id="auto-storage-{{$loop->parent->index}}-{{$loop->index}}"
+                                                            onclick="searchFreeStorage({{$loop->parent->index}}, {{$loop->index}})">Auto</button>
                                                 </span>
                                             </div>
 

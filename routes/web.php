@@ -14,12 +14,14 @@
 Auth::routes();
 
 Route::get('/', 'HomeController@index');
+
 Route::get('/storage', 'StorageController@index');
 Route::get('/storage/{id}/edit', 'StorageController@edit');
 Route::post('/storage/{id}/edit', 'StorageController@editPost');
 Route::get('/storage/{id}/delete', 'StorageController@delete');
 Route::get('/storage/new', 'StorageController@newStorage');
 Route::get('/storage/{parent}/new/', 'StorageController@newStorageParent');
+Route::get('/storage/{id}/free', 'StorageController@findFree');
 
 Route::get('/components', 'ComponentController@listComponents');
 Route::get('/component/{id}', 'ComponentController@view');

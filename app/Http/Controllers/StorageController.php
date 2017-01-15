@@ -80,6 +80,38 @@ class StorageController extends Controller
         echo json_encode(['error' => false]);
     }
 
+    public function findFree($id) {
+        $storage = Storage::find($id);
+
+        $free = $this->getFree($storage);
+        if($free == null) return response()->json(["free" => 0]);
+
+        // Create full path to this storage for frontend api
+        return response()->json(["free" => $this->buildPath($free)]);
+    }
+
+    private function buildPath($storage, &$path = []) {
+        array_unshift($path, $storage->id);
+        if($storage->parent != null) {
+            return $this->buildPath($storage->parent, $path);
+        }
+        return $path;
+    }
+
+    private function getFree($storage) {
+        foreach ($storage->children as $s) {
+            if(sizeof($s->children) == 0) {
+                // Check if nothing is in this storage
+                if(sizeof($s->components) == 0) return $s;
+            } else {
+                $res = $this->getFree($s);
+                if($res != null) return $res;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Delete the storage with all the children
      * @param $storage \App\Storage

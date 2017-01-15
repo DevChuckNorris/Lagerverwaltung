@@ -22,11 +22,15 @@ class Storage extends Model
     }
 
     public function children() {
-        return $this->hasMany('App\Storage', 'parent_storage');
+        return $this->hasMany('App\Storage', 'parent_storage')->orderBy('name');
     }
 
     public function parent() {
         return $this->belongsTo('App\Storage', 'parent_storage');
+    }
+
+    public function components() {
+        return $this->hasMany('App\ComponentStorage', 'storage');
     }
 
     public function sameLevelStorage() {

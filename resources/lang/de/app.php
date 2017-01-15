@@ -21,6 +21,7 @@ return [
     'storage_short' => 'Kurzname',
     'storage_parent' => 'Ober-Lager',
     'main_storage' => 'WURZEL',
+    'no_free_storage' => 'Es ist keine freier Lagerplatz in dieser Auswahl verfügbar.',
 
     'components' => 'Bauteile',
     'edit_component' => '":component" bearbeiten',

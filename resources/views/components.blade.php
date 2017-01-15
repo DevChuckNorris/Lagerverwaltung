@@ -31,7 +31,7 @@
                             </thead>
                             <tbody>
                                 @foreach($components as $component)
-                                    <tr>
+                                    <tr id="component-{{$component->id}}">
                                         <td>{{$component->item_number}}</td>
                                         <td>
                                             <a href="{{ action('ComponentController@view', ['id' => $component->id]) }}">{{$component->description}}</a>
@@ -44,7 +44,15 @@
                                                 @endif
                                             @endforeach
                                         </td>
-                                        <td>{{$component->quantity}}</td>
+                                        <td>
+                                            <span class="quantity">{{$component->quantity}}</span>
+                                            <span class="pull-right">
+                                                <div class="btn-group">
+                                                    <button class="btn btn-default" onclick="quantity({{$component->id}}, 1)">+</button>
+                                                    <button class="btn btn-default" onclick="quantity({{$component->id}}, -1)">-</button>
+                                                </div>
+                                            </span>
+                                        </td>
                                         <td>{{$component->min_quantity}}</td>
                                         <td>{{$component->updated_at}}</td>
                                     </tr>
@@ -53,6 +61,17 @@
                         </table>
 
                         <script>
+                            function quantity(id, quantity) {
+                                $.get('/component/' + id + '/quantity/' + quantity, function (data) {
+                                    var row = $('#component-' + id);
+                                    var quantity = row.find('.quantity');
+
+                                    quantity.html(data);
+                                }).fail(function() {
+                                    alert("@lang('error')");
+                                })
+                            }
+
                             $(document).ready(function() {
                                 $('#components').DataTable({
                                     'order': [[1, 'asc']]
