@@ -194,9 +194,14 @@
                                                 $('#storage-' + $root).val(sub+2);
                                             });
                                         } else {
-                                            if(option.val() == 0) return;
-                                            // no children no pull needed, add new storage selection
                                             var root = parseInt($('#storage').val());
+                                            if(root-1 != $root) {
+                                                console.log('Don\'t add new select box', root, $root);
+                                                return;
+                                            }
+                                            if(option.val() == 0) return;
+
+                                            // no children no pull needed, add new storage selection
                                             $('#storage').val(root+1);
 
                                             $.get('/component/storage/children/0', function(data) {
