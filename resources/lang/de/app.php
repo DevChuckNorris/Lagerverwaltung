@@ -33,4 +33,5 @@ return [
     'component_price' => 'Preis',
     'component_runs_out' => 'Bauteil läuft aus',
     'component_confirm_out' => 'Durch diese Option wird der Bestand auf 0 gesetzt und das Lagerplatz wird wieder freigegeben. Bist du dir sicher?',
+    'please_select_storage' => 'Bitte wähle ein Lager aus um die automatische Lagerplatzsuche zu verwenden.',
 ];

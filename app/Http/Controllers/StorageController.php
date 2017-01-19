@@ -87,7 +87,25 @@ class StorageController extends Controller
         if($free == null) return response()->json(["free" => 0]);
 
         // Create full path to this storage for frontend api
-        return response()->json(["free" => $this->buildPath($free)]);
+        $path = $this->buildPath($free);
+        $children = [];
+        foreach ($path as $s) {
+            $s = Storage::find($s);
+            $ss = [];
+
+            $sss = Storage::where('parent_storage', $s->parent_storage)->get();
+            foreach($sss as $child) {
+                $ss[] = [
+                    "id" => $child->id,
+                    "name" => $child->name,
+                    "short" => $child->short_code,
+                    "children" => sizeof($child->children)
+                ];
+            }
+            $children[] = $ss;
+        }
+
+        return response()->json(["free" => $path, "children" => $children]);
     }
 
     private function buildPath($storage, &$path = []) {

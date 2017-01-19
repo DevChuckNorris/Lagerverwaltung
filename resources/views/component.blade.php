@@ -163,11 +163,34 @@
                                     var select = $('#storage-' + root + '-' + sub);
                                     var id = select.val();
 
+                                    if(id == 0) {
+                                        alert('@lang("app.please_select_storage")');
+                                        return;
+                                    }
+
                                     $.get('/storage/' + id + '/free', function(data) {
                                         if(data.free == 0) {
                                             alert('@lang("app.no_free_storage")');
                                         } else {
-                                            setValue(root, sub+1, data);
+                                            // Delete all select for this storage
+                                            var storageHidden = $('#storage-' + root);
+                                            var x = parseInt(storageHidden.val());
+
+                                            for(var i = 0; i < x; i++) {
+                                                var select = $('#storage-' + root + '-' + i);
+                                                if(select.parent().hasClass("input-group")) {
+                                                    select.parent().remove()
+                                                } else {
+                                                    select.remove();
+                                                }
+                                            }
+
+                                            for(i = 0; i < data.free.length; i++) {
+                                                var targetSelect = createSelect('storage-' + root + '-' + i, data.children[i], root, i, data.free[i]);
+                                                targetSelect.insertBefore(storageHidden);
+                                            }
+
+                                            storageHidden.val(data.free.length);
                                         }
                                     }).fail(function () {
                                         alert("@lang('app.error')");
@@ -176,12 +199,13 @@
                                     //alert(root + ' ' + sub + ': ' + id);
                                 }
 
-                                function createSelect(newId, data, root, sub) {
+                                function createSelect(newId, data, root, sub, value) {
                                     var select = $('<select class="form-control" name="'+newId+'" id="'+newId+'"></select>');
                                     select.append('<option value="0">@lang("app.please_select")</option>');
                                     $.each(data, function() {
                                         var hasChildren = this.children > 0 ? 1 : 0;
-                                        select.append('<option data-haschildren="'+hasChildren+'" value="' + this.id + '">' + this.name + '</option>');
+                                        var selected = this.id == value ? 'selected' : '';
+                                        select.append('<option data-haschildren="'+hasChildren+'" value="' + this.id + '" '+selected+'>' + this.name + '</option>');
                                     });
 
                                     if(sub == 0) {
